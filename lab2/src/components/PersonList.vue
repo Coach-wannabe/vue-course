@@ -15,28 +15,28 @@
     </div>
 
     <div class="cards-wrapper">
-    <div
-        class="card"
-        v-for="(person, index) in paginatedPersons"
-        :key="person.id"
-        :class="getCardClass(index)"
-    >
-        <div class="card-content">
-        <div class="avatar">
-            <img :src="person.Avatar" alt="avatar" />
-        </div>
-        <div class="info">
-            <h4>{{ person.PersonName }}</h4>
-            <div class="rating">
-            <span v-for="n in Math.floor(person.Rating)" :key="n">★</span>
-            <span v-for="n in (5 - Math.floor(person.Rating))" :key="n" class="empty-star">★</span>
+        <div
+            class="card"
+            v-for="(person, index) in paginatedPersons"
+            :key="person.id"
+            :class="getCardClass(index)"
+        >
+            <div class="card-content">
+            <div class="avatar">
+                <img :src="person.Avatar" alt="avatar" />
             </div>
-            <p>{{ person.Commentary }}</p>
-            <div class="date-time">{{ formatDate(person.PubDate) }}</div>
+            <div class="info">
+                <h4>{{ person.PersonName }}</h4>
+                <div class="rating">
+                <span v-for="n in Math.floor(person.Rating)" :key="n">★</span>
+                <span v-for="n in (5 - Math.floor(person.Rating))" :key="n" class="empty-star">★</span>
+                </div>
+                <p>{{ person.Commentary }}</p>
+                <div class="date-time">{{ formatDate(person.PubDate) }}</div>
+            </div>
+            <button class="like-button">LIKE</button>
+            </div>
         </div>
-        <button class="like-button">LIKE</button>
-        </div>
-    </div>
     </div>
 
     <div class="pagination">
@@ -97,13 +97,13 @@ data() {
 
 computed: {
     totalPages() {
-    return Math.ceil(this.filteredPersons.length / this.itemsPerPage);
+        return Math.ceil(this.filteredPersons.length / this.itemsPerPage);
     },
 
     paginatedPersons() {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = this.currentPage * this.itemsPerPage;
-    return this.filteredPersons.slice(start, end);
+        const start = (this.currentPage - 1) * this.itemsPerPage;
+        const end = this.currentPage * this.itemsPerPage;
+        return this.filteredPersons.slice(start, end);
     }
 },
 
@@ -114,9 +114,9 @@ mounted() {
 
 methods: {
     setCurrentDate() {
-    const today = new Date();
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    this.currentDate = today.toLocaleDateString('en-GB', options).replace(/\//g, '.');
+        const today = new Date();
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        this.currentDate = today.toLocaleDateString('en-GB', options).replace(/\//g, '.');
     },
 
     nextPage() {
@@ -132,23 +132,23 @@ methods: {
     },
     
     formatDate(dateStr) {
-    const date = new Date(dateStr);
-    const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return date.toLocaleString('en-GB', options);
+        const date = new Date(dateStr);
+        const options = { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return date.toLocaleString('en-GB', options);
     },
     
     filterByDate() {
-    this.filteredPersons = _.orderBy(this.persons, ['PubDate'], ['desc']);
-    this.currentPage = 1; 
+        this.filteredPersons = _.orderBy(this.persons, ['PubDate'], ['desc']);
+        this.currentPage = 1; 
     },
     
     filterByRating() {
-    this.filteredPersons = _.orderBy(this.persons, ['Rating'], ['desc']);
-    this.currentPage = 1; 
+        this.filteredPersons = _.orderBy(this.persons, ['Rating'], ['desc']);
+        this.currentPage = 1; 
     },
     
     getCardClass(index) {
-    return index % 2 === 0 ? 'left-card' : 'right-card';
+        return index % 2 === 0 ? 'left-card' : 'right-card';
     }
 }
 };
