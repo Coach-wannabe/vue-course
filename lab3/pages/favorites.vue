@@ -1,59 +1,71 @@
 <template>
-    <div class="favorites-page">
-      <h1>Your Favorites</h1>
-  
-      <!-- List of favorited profiles -->
-      <div v-if="favorites.length">
-        <div v-for="favorite in favorites" :key="favorite.id" class="favorite-item">
-          <h3>{{ favorite.PersonName }}</h3>
-          <p>{{ favorite.Commentary }}</p>
-        </div>
-      </div>
-      <div v-else>
-        <p>No favorites yet. Add some profiles to your favorites list!</p>
+  <div class="favorites-page">
+    <h1>Your Favorites</h1>
+    <div v-if="favorites.length > 0">
+      <div class="card" v-for="person in favorites" :key="person.id">
+        <h4>{{ person.PersonName }}</h4>
+        <p>{{ person.Commentary }}</p>
+        <p>Topic: {{ person.Topic }}</p>
+        <p>Date: {{ person.PubDate }}</p>
+        <p>Rating: {{ person.Rating.toFixed(1) }}</p>
+        <!-- Unlike button to remove from favorites -->
+        <button @click="removeFromFavorites(person)">Remove from Favorites</button>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        favorites: [] // This should come from a Vuex store or localStorage depending on your implementation
-      };
-    },
-    mounted() {
-      // Load favorites from localStorage (or Vuex, if using)
-      const storedFavorites = localStorage.getItem('favorites');
-      if (storedFavorites) {
-        this.favorites = JSON.parse(storedFavorites);
-      }
+    <p v-else>No favorites added yet.</p>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      favorites: []
+    };
+  },
+  mounted() {
+    // Load persons from localStorage and filter for favorites
+    const persons = JSON.parse(localStorage.getItem('persons')) || [];
+    this.favorites = persons.filter(person => person.isFavorite);
+  },
+  methods: {
+    removeFromFavorites(person) {
+      // Update favorite status and remove from favorites
+      person.isFavorite = false;
+
+      // Save the updated list back to localStorage
+      const persons = JSON.parse(localStorage.getItem('persons')) || [];
+      const updatedPersons = persons.map(p => (p.id === person.id ? person : p));
+      localStorage.setItem('persons', JSON.stringify(updatedPersons));
+
+      // Update the local favorites list
+      this.favorites = this.favorites.filter(fav => fav.id !== person.id);
     }
-  };
-  </script>
-  
-  <style scoped>
-  .favorites-page {
-    padding: 20px;
   }
-  
-  .favorite-item {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-  }
-  
-  .favorite-item h3 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #3498db;
-  }
-  
-  .favorite-item p {
-    margin: 5px 0;
-    font-size: 1rem;
-    color: #555;
-  }
-  </style>
-  
+};
+</script>
+
+<style scoped>
+.favorites-page {
+  padding: 20px;
+}
+
+.card {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #c0392b;
+}
+</style>
